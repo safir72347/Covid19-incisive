@@ -38,41 +38,44 @@
         
         <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">Covid19-Incisive</h1>
 
-        <p class="leading-relaxed">Fam locavore kickstarter distillery. Mixtape chillwave tumeric sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo juiceramps cornhole raw denim forage brooklyn. Everyday carry +1 seitan poutine tumeric. Gastropub blue bottle austin listicle pour-over, neutra jean shorts keytar banjo tattooed umami cardigan.</p>
-        <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
-          <div class="flex">
-            <span class="mr-3">Color</span>
-            <button class="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"></button>
-            <button class="border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none"></button>
-            <button class="border-2 border-gray-300 ml-1 bg-indigo-500 rounded-full w-6 h-6 focus:outline-none"></button>
-          </div>
-          <div class="flex ml-6 items-center">
-            <span class="mr-3">Size</span>
-            <div class="relative">
-              <select class="rounded border appearance-none border-gray-400 py-2 focus:outline-none focus:border-indigo-500 text-base pl-3 pr-10">
-                <option>SM</option>
-                <option>M</option>
-                <option>L</option>
-                <option>XL</option>
-              </select>
-              <span class="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4" viewBox="0 0 24 24">
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </div>
-          </div>
-        </div>
+        <p class="leading-relaxed">Covid19-incisive is a web application that provides information about Corona Cases in the Country and also gives
+        the cases at your location by tracking your IP. This also visualises the data. The next version is a dexterous Python application that predicts the
+    end of Coronavirus cases in the states and in the country.</p>
+        
         <div class="flex">
-          <span class="title-font font-medium text-2xl text-gray-900">$58.00</span>
-          <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Button</button>
-          <button class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-            <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
-            </svg>
-          </button>
+          <span class="title-font font-small text-2xl ">To go to predictive analysis project, Click <a href="#" style="color: red;"><b>here.</b></a></span>
+         
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="text-gray-700 body-font overflow-hidden">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="lg:w-4/5 mx-auto flex flex-wrap">
+      <div class="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
+        
+        <h1 class="text-gray-900 text-3xl title-font font-medium mb-4">Covid19 cases near you</h1>
+        <div class="flex mb-4">
+          <a class="flex-grow text-indigo-500 border-b-2 border-indigo-500 py-2 text-lg px-1">Location</a>
+          
+        </div>
+        <p class="leading-relaxed mb-4">
+        	Your IP address is : {{ location_details.ip }}
+        </p>
+        <p>
+        	Your Location is : {{ location_details.city }} {{ location_details.postal }}, {{ location_details.state }}, {{ location_details.country }}
+        </p>
+        <p>
+        	Cases Total : {{ location_cases.state_total }}, Cured : {{ location_cases.state_cured }}, Deaths : {{ location_cases.state_death }}, OnGoing : {{ location_cases.state_ongoing }}
+        </p>
+        <p>
+        	Note: The IP is default. To get the real time IP, host the site and remove the internal IP definition on line 26 of views.py
+        </p>
+        
+      </div>
+      <img alt="ecommerce" class="lg:w-1/2 object-cover object-center" src="static/images/location3.jpg">
     </div>
   </div>
 </section>

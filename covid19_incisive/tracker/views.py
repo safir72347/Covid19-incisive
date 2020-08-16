@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from .models import *
 import socket
 import geoip2.database
-
+import requests
+from bs4 import BeautifulSoup
 
 # Create your views here.
 
@@ -38,9 +39,55 @@ def index(request):
 	#print(response.location.longitude)
 
 	user_location = [response.city.name, response.postal.code, response.subdivisions.most_specific.name, response.country.name]
-	reader.close()
+	
 	print(user_location)
-	return render(request, 'index.html')
+
+	city = response.city.name
+	postal = response.postal.code
+	state = response.subdivisions.most_specific.name
+	country = response.country.name
+	
+	reader.close()
+
+	url = "https://www.mygov.in/corona-data/covid19-statewise-status/"
+
+	r = requests.get(url)
+	htmlContent = r.content
+	soup = BeautifulSoup(htmlContent, 'html.parser')
+
+	class_names = ['field-name-field-covid-india-as-on' ,'field-name-field-passenger-screened-format', 'field-name-field-total-active-case', 
+	'field-name-field-total-cured-discharged', 'field-name-field-migrated-counts', 'field-name-field-total-death-case', 
+	'field-name-field-last-total-active', 'field-name-field-last-total-cured', 'field-name-field-last-total-death', 
+	'field-name-field-total-samples-tested', 'field-name-field-samples-tested-today', 'field-name-field-last-sample-tested-date']
+
+
+	for classes in class_names:
+		print(soup.find('div', class_=classes).get_text())
+
+	state_data_list = []
+
+	states_data = soup.find_all('div', class_='field-collection-item-field-covid-statewise-data')
+	for s in states_data:
+		#print(s.get_text())
+		splitted_data = s.get_text().split(":")
+		#state_data_list.append(splitted_data)
+		state_name = str(splitted_data[1].split("Total")[0].lstrip())
+		state_total = str(splitted_data[2].split("Cured")[0].lstrip())
+		state_cured = str(splitted_data[3].split("Death")[0].lstrip())
+		state_death = str(splitted_data[4].split("State")[0].lstrip())
+		state_ongoing = str(int(state_total) - int(state_cured) + int(state_death))
+		single_state = {"state_name":state_name, "state_total":state_total, "state_cured": state_cured, "state_death": state_death, "state_ongoing": state_ongoing}
+		state_data_list.append(single_state)
+
+	#print(state_data_list)
+	
+	for i in state_data_list:
+		if i['state_name'].replace(" ", "") == state.replace(" ", ""):
+			location_cases = i
+			break
+	location_details = {'ip':ip, 'city': city, 'postal': postal, 'state': state, 'country': country}
+	context = {'location_details':location_details, 'location_cases':location_cases}
+	return render(request, 'index.html', context)
 
 def visitor_ip_address(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
