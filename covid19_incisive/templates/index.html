@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html style="scroll-behavior: smooth;">
 <head>
 	<title>Covid19 Incisive</title>
 	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
@@ -16,10 +16,10 @@
       <span class="ml-3 text-xl">Covid19-Incisive</span>
     </a>
     <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-      <a class="mr-5 hover:text-gray-900">Home</a>
-      <a class="mr-5 hover:text-gray-900">Your State</a>
-      <a class="mr-5 hover:text-gray-900">All States</a>
-      <a class="mr-5 hover:text-gray-900">Visualization</a>
+      <a class="mr-5 hover:text-gray-900" href="#home">Home</a>
+      <a class="mr-5 hover:text-gray-900" href="#your_state">Your State</a>
+      <a class="mr-5 hover:text-gray-900" href="#all_states">All States</a>
+      <a class="mr-5 hover:text-gray-900" href="#visualization">Visualization</a>
     </nav>
     <button class="inline-flex items-center bg-gray-200 border-0 py-1 px-3 focus:outline-none hover:bg-gray-300 rounded text-base mt-4 md:mt-0">Prediction
       <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
 </header>
 
 
-<section class="text-gray-700 body-font overflow-hidden">
+<section class="text-gray-700 body-font overflow-hidden" id="home">
   <div class="container px-5 py-24 mx-auto">
     <div class="lg:w-4/5 mx-auto flex flex-wrap">
       <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="static/images/covid2.jpg">
@@ -51,7 +51,7 @@
   </div>
 </section>
 
-<section class="text-gray-700 body-font overflow-hidden">
+<section class="text-gray-700 body-font overflow-hidden" id="your_state">
   <div class="container px-5 py-24 mx-auto">
     <div class="lg:w-4/5 mx-auto flex flex-wrap">
       <div class="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
@@ -62,16 +62,16 @@
           
         </div>
         <p class="leading-relaxed mb-4">
-        	Your IP address is : {{ location_details.ip }}
+        	Your IP address is : <b style="color: #8830F7;"> {{ location_details.ip }} </b>
         </p>
         <p>
-        	Your Location is : {{ location_details.city }} {{ location_details.postal }}, {{ location_details.state }}, {{ location_details.country }}
+        	Your Location is : <b style="color: #8830F7;"> {{ location_details.city }} {{ location_details.postal }}, {{ location_details.state }}, {{ location_details.country }} </b>
         </p>
         <p>
-        	Cases Total : {{ location_cases.state_total }}, Cured : {{ location_cases.state_cured }}, Deaths : {{ location_cases.state_death }}, OnGoing : {{ location_cases.state_ongoing }}
+        	Cases Total : <b style="color: #1288F9"> {{ location_cases.state_total }} </b>, Cured : <b style="color: #13DE0C">{{ location_cases.state_cured }}</b>, Deaths : <b style="color: red;">{{ location_cases.state_death }}</b>, OnGoing : <b style="color: #F91238"> {{ location_cases.state_ongoing }}</b>
         </p>
         <p>
-        	Note: The IP is default. To get the real time IP, host the site and remove the internal IP definition on line 26 of views.py
+        	<b style="color: black;">Note : </b> The IP is default. To get the real time IP, host the site and remove the internal IP definition on line 26 of views.py
         </p>
         
       </div>
@@ -80,6 +80,41 @@
   </div>
 </section>
 
+
+
+<section class="text-gray-700 body-font" id="all_states">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="flex flex-col text-center w-full mb-20">
+      <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">All Indian States</h1>
+      <p class="lg:w-2/3 mx-auto leading-relaxed text-base">All the data below is being scraped live from <a href="https://www.mygov.in/corona-data/covid19-statewise-status/" target="_blank"><b style="color: red;"> https://www.mygov.in/corona-data/covid19-statewise-status/ </b> </a></p>
+    </div>
+    <div class="lg:w-2/3 w-full mx-auto overflow-auto">
+      <table class="table-auto w-full text-left whitespace-no-wrap">
+        <thead>
+          <tr>
+     		<th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200">State</th>
+            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200">Total</th>
+            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200">Cured</th>
+            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200">Deaths</th>
+            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200">On Going</th>
+          </tr>
+        </thead>
+        <tbody>
+        	{% for i in state_data %}
+          <tr>
+            <td class="px-4 py-3">{{ i.state_name }}</td>
+            <td class="px-4 py-3">{{ i.state_total }}</td>
+            <td class="px-4 py-3">{{ i.state_cured }}</td>
+            <td class="px-4 py-3">{{ i.state_death }}</td>
+            <td class="px-4 py-3">{{ i.state_ongoing }}</td>
+          </tr>
+          	{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+  </div>
+</section>
 
 
 </body>

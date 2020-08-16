@@ -86,7 +86,7 @@ def index(request):
 			location_cases = i
 			break
 	location_details = {'ip':ip, 'city': city, 'postal': postal, 'state': state, 'country': country}
-	context = {'location_details':location_details, 'location_cases':location_cases}
+	context = {'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list}
 	return render(request, 'index.html', context)
 
 def visitor_ip_address(request):
