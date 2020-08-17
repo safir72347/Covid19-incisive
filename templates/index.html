@@ -4,7 +4,14 @@
 <html style="scroll-behavior: smooth;">
 <head>
 	<title>Covid19 Incisive</title>
-	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  
+  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-x.y.z.min.js"></script>
+  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-x.y.z.min.js"></script>
+  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-x.y.z.min.js"></script>
+  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-x.y.z.min.js"></script>
+
+  {{ script | safe }}
 </head>
 <body>
 	<header class="text-gray-700 body-font">
@@ -117,6 +124,9 @@
     
   </div>
 </section>
+
+
+{{ div | safe }}
 
 
 </body>
