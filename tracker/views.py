@@ -5,9 +5,10 @@ import socket
 import geoip2.database
 import requests
 from bs4 import BeautifulSoup
+'''
 from bokeh.plotting import figure, output_file, show
 from brokeh.embed import components
-
+'''
 # Create your views here.
 
 def index(request):
@@ -88,14 +89,15 @@ def index(request):
 			location_cases = i
 			break
 	location_details = {'ip':ip, 'city': city, 'postal': postal, 'state': state, 'country': country}
-
+	'''
 	p = figure(plot_width=400, plot_height=400)
 
 	# add a circle renderer with a size, color, and alpha
 	p.circle([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], size=20, color="navy", alpha=0.5)
 
 	script, div = components(p)
-	context = {'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list, 'script':script, 'div':div}
+	'''
+	context = {'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list, }
 	return render(request, 'index.html', context)
 
 def visitor_ip_address(request):
