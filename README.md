@@ -45,6 +45,10 @@ pip install django_plotly_dash
 pip install channels daphne redis django-redis channels-redis
 ```
 
+## Downloads
+Map GeoJson Data - https://un-mapped.carto.com/tables/states_india/public/map
+GeoIP2 Database - https://www.maxmind.com/en/geoip2-databases
+
 ## Deployment
 
 Run this code on local host using 127.0.0.1:8000/
