@@ -8,10 +8,16 @@ from bs4 import BeautifulSoup
 
 from plotly.offline import plot
 import plotly.graph_objects as go
-'''
-from bokeh.plotting import figure, output_file, show
-from brokeh.embed import components
-'''
+
+import json
+import numpy as np
+import pandas as pd
+import plotly.express as px
+
+
+import plotly.io as pio
+pio.renderers.default = 'browser'
+
 # Create your views here.
 
 def index(request):
@@ -66,11 +72,13 @@ def index(request):
 	'field-name-field-last-total-active', 'field-name-field-last-total-cured', 'field-name-field-last-total-death', 
 	'field-name-field-total-samples-tested', 'field-name-field-samples-tested-today', 'field-name-field-last-sample-tested-date']
 
-
+	texts = []
 	for classes in class_names:
-		print(soup.find('div', class_=classes).get_text())
+		temp = soup.find('div', class_=classes).get_text()
+		texts.append(temp)
 
 	state_data_list = []
+	state_data_list1 = []
 
 	states_data = soup.find_all('div', class_='field-collection-item-field-covid-statewise-data')
 	for s in states_data:
@@ -78,12 +86,33 @@ def index(request):
 		splitted_data = s.get_text().split(":")
 		#state_data_list.append(splitted_data)
 		state_name = str(splitted_data[1].split("Total")[0].lstrip())
-		state_total = str(splitted_data[2].split("Cured")[0].lstrip())
-		state_cured = str(splitted_data[3].split("Death")[0].lstrip())
-		state_death = str(splitted_data[4].split("State")[0].lstrip())
-		state_ongoing = str(int(state_total) - int(state_cured) + int(state_death))
+		state_total = int(splitted_data[2].split("Cured")[0].lstrip())
+		state_cured = int(splitted_data[3].split("Death")[0].lstrip())
+		state_death = int(splitted_data[4].split("State")[0].lstrip())
+		state_ongoing = int(int(state_total) - int(state_cured) + int(state_death))
+		
+		
+		if state_name == "Andaman and Nicobar":
+			state_name = "Andaman & Nicobar Island"
+		if state_name == "Dadra and Nagar Haveli and Daman and Diu":
+			state_name = "Dadara & Nagar Havelli"
+			single_state = {"state_name":state_name, "state_total":state_total, "state_cured": state_cured, "state_death": state_death, "state_ongoing": state_ongoing}
+			single_state1 = [state_name, state_total, state_cured, state_death, state_ongoing]
+			state_name = "Daman & Diu"
+		if state_name == "Jammu and Kashmir":
+			state_name = "Jammu & Kashmir"
+		if state_name == "Arunachal Pradesh":
+			state_name = "Arunanchal Pradesh"
+		if state_name == "Delhi":
+			state_name = "NCT of Delhi"
+		if state_name == "Telengana":
+			state_name = "Telangana"
+
 		single_state = {"state_name":state_name, "state_total":state_total, "state_cured": state_cured, "state_death": state_death, "state_ongoing": state_ongoing}
+		single_state1 = [state_name, state_total, state_cured, state_death, state_ongoing]
 		state_data_list.append(single_state)
+		if state_name!="Ladakh":
+			state_data_list1.append(single_state1)
 
 	#print(state_data_list)
 	
@@ -92,32 +121,75 @@ def index(request):
 			location_cases = i
 			break
 	location_details = {'ip':ip, 'city': city, 'postal': postal, 'state': state, 'country': country}
-	'''
-	p = figure(plot_width=400, plot_height=400)
 
-	# add a circle renderer with a size, color, and alpha
-	p.circle([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], size=20, color="navy", alpha=0.5)
+	india_states = json.load(open("static/plotly_mapping/states_india.geojson", "r"))
+	state_id_map = {}
+	#print(india_states['features'])
+	for feature in india_states["features"]:
+		feature["id"] = feature["properties"]["state_code"]
+		state_id_map[feature["properties"]["st_nm"]] = feature["id"]
+	#print(state_id_map)
 
-	script, div = components(p)
-	'''
-	def scatter():
-		x1 = [1,2,3,4]
-		y1 = [38, 35, 25, 45]
 
-		trace = go.Scatter(
-			x = x1,
-			y = y1
-		)
-		layout = dict(
-			title = 'Simple Graph',
-			xaxis = dict(range=[min(x1),max(x1)]),
-			yaxis = dict(range=[min(y1),max(y1)])
-		)
-		fig = go.Figure(data=[trace], layout=layout)
-		plot_div = plot(fig, output_type='div', include_plotlyjs=False)
-		return plot_div
+	df = pd.DataFrame(state_data_list1, columns=['State or union territory', 'Total', 'Cured', 'Deaths', 'OnGoing'])
+	#print(df)
+	df['cases'] = df['OnGoing']
+	df["id"] = df["State or union territory"].apply(lambda x: state_id_map[x])
+	df['cases_scale'] = np.log10(df["cases"])
+	
+	
+	fig = px.choropleth(
+		df,
+		locations="id",
+		geojson=india_states,
+		color="cases_scale",
+		color_continuous_scale="Viridis",
+		hover_name="State or union territory",
+		hover_data=["cases"],
+		title="Corona Cases in India",
+	)
+	fig.update_geos(fitbounds="locations", visible=False)
+	fig.update_layout(margin=dict(l=0, r=0, t=25, b=0))
+	#fig.show()
+	plot_div = plot(fig, output_type='div', include_plotlyjs=True)
+	fig = px.choropleth_mapbox(
+		df,
+		locations="id",
+		geojson=india_states,
+		color="cases_scale",
+		hover_name="State or union territory",
+		hover_data=["cases"],
+		title="Corona Cases in India",
+		mapbox_style="carto-positron",
+		center={"lat": 24, "lon": 78},
+		zoom=3,
+		opacity=0.5,
+	)
+	fig.update_geos(fitbounds="locations", visible=False)
+	fig.update_layout(margin=dict(l=0, r=0, t=25, b=0))
+	#fig.show()
 
-	context = {'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list, 'plot': scatter() }
+	plot_div1 = plot(fig, output_type='div', include_plotlyjs=False)
+
+
+
+	x1 = [i[4] for i in state_data_list1]
+	y1 = [i[4] for i in state_data_list1]
+
+	trace = go.Scatter(
+		x = x1,
+		y = y1
+	)
+	layout = dict(
+		title = 'OnGoing Cases Vs Cured cases',
+		xaxis = dict(range=[min(x1),max(x1)]),
+		yaxis = dict(range=[min(y1),max(y1)])
+	)
+	fig = go.Figure(data=[trace], layout=layout)
+	plot_div2 = plot(fig, output_type='div', include_plotlyjs=False)
+	
+
+	context = {'texts':texts,'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list, 'plot': plot_div, 'plot1': plot_div1, 'plot2':plot_div2}
 	return render(request, 'index.html', context)
 
 def visitor_ip_address(request):

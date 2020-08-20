@@ -100,6 +100,9 @@
     <div class="flex flex-col text-center w-full mb-20">
       <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">All Indian States</h1>
       <p class="lg:w-2/3 mx-auto leading-relaxed text-base">All the data below is being scraped live from <a href="https://www.mygov.in/corona-data/covid19-statewise-status/" target="_blank"><b style="color: red;"> https://www.mygov.in/corona-data/covid19-statewise-status/ </b> </a></p>
+    {% for i in texts %}
+      <p>{{ i }}</p>
+    {% endfor %}
     </div>
     <div class="lg:w-2/3 w-full mx-auto overflow-auto">
       <table class="table-auto w-full text-left whitespace-no-wrap">
@@ -129,9 +132,21 @@
   </div>
 </section>
 
+<div id="visualization">
+  {{ plot1 | safe }}
+</div>
+
+<div style="height: 100%; width: 100%;">
 
 {{ plot | safe }}
 
+</div>
+
+<div style="height: 100%; width: 100%;">
+
+  {{ plot2 | safe }}
+  
+  </div>
 
 </body>
 </html>
