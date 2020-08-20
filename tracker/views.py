@@ -5,6 +5,9 @@ import socket
 import geoip2.database
 import requests
 from bs4 import BeautifulSoup
+
+from plotly.offline import plot
+import plotly.graph_objects as go
 '''
 from bokeh.plotting import figure, output_file, show
 from brokeh.embed import components
@@ -97,7 +100,24 @@ def index(request):
 
 	script, div = components(p)
 	'''
-	context = {'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list, }
+	def scatter():
+		x1 = [1,2,3,4]
+		y1 = [38, 35, 25, 45]
+
+		trace = go.Scatter(
+			x = x1,
+			y = y1
+		)
+		layout = dict(
+			title = 'Simple Graph',
+			xaxis = dict(range=[min(x1),max(x1)]),
+			yaxis = dict(range=[min(y1),max(y1)])
+		)
+		fig = go.Figure(data=[trace], layout=layout)
+		plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+		return plot_div
+
+	context = {'location_details':location_details, 'location_cases':location_cases, 'state_data':state_data_list, 'plot': scatter() }
 	return render(request, 'index.html', context)
 
 def visitor_ip_address(request):

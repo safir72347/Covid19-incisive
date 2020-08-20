@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load plotly_dash %}
 <!DOCTYPE html>
 <html style="scroll-behavior: smooth;">
 <head>
@@ -11,7 +11,11 @@
   <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-x.y.z.min.js"></script>
   <script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-x.y.z.min.js"></script>
 
-  {{ script | safe }}
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
+
+  
+
+  
 </head>
 <body>
 	<header class="text-gray-700 body-font">
@@ -126,7 +130,7 @@
 </section>
 
 
-{{ div | safe }}
+{{ plot | safe }}
 
 
 </body>
